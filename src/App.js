@@ -1,4 +1,4 @@
-import TabComponent from "./components/Tab";
+import TabComponent from "./components/TabComponent";
 
 function App() {
   return (

@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import Button from "@mui/material/Button";
+import UserListComponent from "./UserListComponent";
 
 export default function TabComponent() {
   const [value, setValue] = useState("1");
@@ -24,15 +25,19 @@ export default function TabComponent() {
               variant="scrollable"
               scrollButtons="auto"
             >
-              <Tab label="User" value="1" />
+              <Tab label="User (Admin)" value="1" />
               <Tab label="Employee" value="2" />
             </TabList>
           </Box>
 
           <Button variant="contained">Add a user</Button>
 
-          <TabPanel value="1">Admin User List</TabPanel>
-          <TabPanel value="2">Employee User List</TabPanel>
+          <TabPanel value="1">
+            <UserListComponent type={"admin"} />
+          </TabPanel>
+          <TabPanel value="2">
+            <UserListComponent type={"employee"} />
+          </TabPanel>
         </TabContext>
       </Box>
     </>
