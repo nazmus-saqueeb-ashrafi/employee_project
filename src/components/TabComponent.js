@@ -30,7 +30,10 @@ export default function TabComponent() {
             </TabList>
           </Box>
 
-          <Button variant="contained">Add a user</Button>
+          <br />
+          <Box sx={{ paddingX: 2 }}>
+            <Button variant="contained">Add a user</Button>
+          </Box>
 
           <TabPanel value="1">
             <UserListComponent type={"admin"} />
