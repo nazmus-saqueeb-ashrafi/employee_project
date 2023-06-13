@@ -4,6 +4,7 @@ import Tab from "@mui/material/Tab";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import Button from "@mui/material/Button";
 import UserListComponent from "./UserListComponent";
+import BasicModal from "./BasicModal";
 
 export default function TabComponent() {
   const [value, setValue] = useState("1");
@@ -21,7 +22,7 @@ export default function TabComponent() {
               aria-label="Tabs example"
               textColor="secondary"
               indicatorColor="secondary"
-              centered
+              //   centered
               variant="scrollable"
               scrollButtons="auto"
             >
@@ -32,7 +33,8 @@ export default function TabComponent() {
 
           <br />
           <Box sx={{ paddingX: 2 }}>
-            <Button variant="contained">Add a user</Button>
+            {/* <Button variant="contained">Add a user</Button> */}
+            <BasicModal />
           </Box>
 
           <TabPanel value="1">

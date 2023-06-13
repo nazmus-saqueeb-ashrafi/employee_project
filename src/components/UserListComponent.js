@@ -52,7 +52,7 @@ export default function UserListComponent({ type }) {
           <ListItem
             key={value.empID}
             disableGutters
-            secondaryAction={<Button variant="contained">Edit</Button>}
+            secondaryAction={<Button variant="contained">Detail</Button>}
           >
             <ListItemText primary={`${value.firstName} ${value.lastName}`} />
           </ListItem>
