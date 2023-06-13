@@ -1,12 +1,11 @@
-import "./App.css";
-import Button from "@mui/material/Button";
+import TabComponent from "./components/Tab";
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
         <div>
-          <Button variant="contained">Hello World</Button>
+          <TabComponent />
         </div>
       </header>
     </div>
