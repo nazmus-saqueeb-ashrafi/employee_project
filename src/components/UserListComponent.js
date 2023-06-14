@@ -2,12 +2,15 @@ import React, { useEffect, useState, useMemo } from "react";
 import { List, ListItem, ListItemText } from "@mui/material";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import { useNavigate } from "react-router-dom";
 
 const GET_USERS_API_URL = "http://59.152.62.177:8085/api/Employee/EmployeeData";
 
 export default function UserListComponent({ type }) {
   const [users, setUsers] = useState([]);
   const [query, setQuery] = useState("");
+
+  const navigate = useNavigate();
 
   const getUsers = async () => {
     const response = await fetch(`${GET_USERS_API_URL}`);
@@ -52,7 +55,14 @@ export default function UserListComponent({ type }) {
           <ListItem
             key={value.empID}
             disableGutters
-            secondaryAction={<Button variant="contained">Detail</Button>}
+            secondaryAction={
+              <Button
+                variant="contained"
+                onClick={() => navigate(`users/${value.empID}`)}
+              >
+                Detail
+              </Button>
+            }
           >
             <ListItemText primary={`${value.firstName} ${value.lastName}`} />
           </ListItem>

@@ -10,7 +10,6 @@ import Select from "@mui/material/Select";
 import { useState, useEffect } from "react";
 import { Field, Form, Formik } from "formik";
 import { object, string } from "yup";
-import UserListComponent from "./UserListComponent";
 
 const style = {
   position: "absolute",
@@ -136,7 +135,9 @@ export default function BasicModal() {
               formikHelpers.resetForm();
 
               handleClose();
-              // useNavigate to UserListComponent
+
+              // refresh here to show updated info
+              window.location.reload();
             }}
             validationSchema={object({
               firstName: string().required("Please enter first name"),
@@ -172,26 +173,6 @@ export default function BasicModal() {
                     }
                     helperText={Boolean(touched.lastName) && errors.lastName}
                   ></Field>
-                  {/* <TextField
-                    type="text"
-                    variant="outlined"
-                    color="secondary"
-                    label="First Name"
-                    //   onChange={(e) => setFirstName(e.target.value)}
-                    //   value={firstName}
-                    fullWidth
-                    required
-                  />
-                  <TextField
-                    type="text"
-                    variant="outlined"
-                    color="secondary"
-                    label="Last Name"
-                    //   onChange={(e) => setLastName(e.target.value)}
-                    //   value={lastName}
-                    fullWidth
-                    required
-                  /> */}
                 </Stack>
                 <Box sx={{ minWidth: 120 }}>
                   <FormControl fullWidth>
