@@ -6,6 +6,7 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState, useMemo } from "react";
+import EditModal from '../components/EditModal';
 
 const GET_USER_API_URL = "http://59.152.62.177:8085/api/Employee/IndividualEmployeeData/"
 
@@ -61,7 +62,10 @@ export default function User() {
                 </Typography>
             </CardContent>
             
-            <Button variant="contained">Edit</Button>
+            
+            <Box sx={{ paddingX: 2 }}>
+                <EditModal user={user} />
+            </Box>
             <Box
                 sx={{
                     

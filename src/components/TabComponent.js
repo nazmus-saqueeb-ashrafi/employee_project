@@ -32,7 +32,6 @@ export default function TabComponent() {
 
           <br />
           <Box sx={{ paddingX: 2 }}>
-            {/* <Button variant="contained">Add a user</Button> */}
             <BasicModal />
           </Box>
 

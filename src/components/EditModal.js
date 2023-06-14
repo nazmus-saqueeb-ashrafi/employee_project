@@ -27,19 +27,19 @@ const GET_DIVISIONS_API_URL = "http://59.152.62.177:8085/api/Employee/Division";
 const GET_DISTRICTS_API_URL =
   "http://59.152.62.177:8085/api/Employee/District/";
 
-export default function CreateModal() {
+export default function EditModal({ user }) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const [type, setType] = useState(100);
+  const [type, setType] = useState(user.employeeType === "Admin" ? 100 : 200);
   const handleTypeChange = (event) => {
     setType(event.target.value);
   };
 
   // Division Field Handling Logic
   const [divisions, setDivisions] = useState([]);
-  const [division, setDivision] = useState(0);
+  const [division, setDivision] = useState(user.divisionId);
   const getDivisions = async () => {
     const response = await fetch(`${GET_DIVISIONS_API_URL}`);
     const data = await response.json();
@@ -48,6 +48,9 @@ export default function CreateModal() {
   };
   const handleDivisionChange = (event) => {
     setDivision(event.target.value);
+    setDistrict(null);
+    getDistricts(division);
+    console.log(division);
 
     // console.log(division);
   };
@@ -59,7 +62,6 @@ export default function CreateModal() {
     const response = await fetch(`${GET_DISTRICTS_API_URL}` + divisionID);
     const data = await response.json();
     // console.log(data);
-
     setDistricts(data.readDistrictData);
   };
   const handleDistrictChange = (event) => {
@@ -68,6 +70,17 @@ export default function CreateModal() {
   };
 
   // useEffects
+
+  useEffect(() => {
+    setDistrict(user.districeID);
+    setDivision(user.divisionId);
+
+    // console.log(user.employeeType === "Admin");
+    // console.log(type);
+
+    setType(user.employeeType === "Admin" ? 100 : 200);
+  }, [user]);
+
   useEffect(() => {
     getDivisions();
   }, []);
@@ -79,14 +92,14 @@ export default function CreateModal() {
   //
 
   const initalValues = {
-    firstName: "",
-    lastName: "",
+    firstName: user.firstName,
+    lastName: user.lastName,
   };
 
   return (
     <div>
       <Button variant="contained" onClick={handleOpen}>
-        Create User
+        Edit User
       </Button>
 
       <Modal
@@ -98,7 +111,7 @@ export default function CreateModal() {
         <Box sx={style}>
           <Box textAlign="center">
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              Create User
+              Update User
             </Typography>
           </Box>
           <br />
@@ -122,14 +135,15 @@ export default function CreateModal() {
               console.log(post);
 
               fetch(
-                "http://59.152.62.177:8085/api/Employee/SaveEmployeeInformation/",
+                "http://59.152.62.177:8085/api/Employee/UpdateEmployeeInformation/" +
+                  user.empID,
                 {
-                  method: "POST",
+                  method: "PUT",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify(post),
                 }
               ).then(() => {
-                console.log("new user added");
+                console.log("user updated");
               });
 
               formikHelpers.resetForm();
@@ -201,7 +215,7 @@ export default function CreateModal() {
                         <Select
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
-                          value={division ?? division.divID}
+                          value={division}
                           label="Division"
                           onChange={handleDivisionChange}
                         >
@@ -235,7 +249,7 @@ export default function CreateModal() {
                         <Select
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
-                          value={district ?? district.districtID}
+                          value={district ?? district}
                           label="District"
                           onChange={handleDistrictChange}
                         >
@@ -261,7 +275,7 @@ export default function CreateModal() {
 
                 <Box textAlign="center">
                   <Button type="submit" variant="contained">
-                    Create
+                    Update
                   </Button>
                 </Box>
               </Form>
