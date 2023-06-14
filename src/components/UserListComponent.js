@@ -16,7 +16,7 @@ export default function UserListComponent({ type }) {
     const response = await fetch(`${GET_USERS_API_URL}`);
     const data = await response.json();
 
-    // console.log(data.readEmployeeData);
+    console.log(data.readEmployeeData);
 
     if (type == "admin") {
       setUsers(data.readEmployeeData.filter((x) => x.employeeType == "Admin"));
@@ -50,7 +50,7 @@ export default function UserListComponent({ type }) {
         type="search"
       />
       <br />
-      <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
+      <List sx={{ width: "300%", maxWidth: 1060, bgcolor: "background.paper" }}>
         {filteredItems.map((value) => (
           <ListItem
             key={value.empID}
@@ -65,6 +65,8 @@ export default function UserListComponent({ type }) {
             }
           >
             <ListItemText primary={`${value.firstName} ${value.lastName}`} />
+            <ListItemText primary={`${value.employeeType}`} />
+            <ListItemText primary={`${value.disvision}, ${value.district}`} />
           </ListItem>
         ))}
       </List>
