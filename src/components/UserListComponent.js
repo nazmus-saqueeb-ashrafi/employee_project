@@ -35,7 +35,9 @@ export default function UserListComponent({ type }) {
     return users.filter((user) => {
       return (
         user.firstName.toLowerCase().includes(query.toLowerCase()) ||
-        user.lastName.toLowerCase().includes(query.toLowerCase())
+        user.lastName.toLowerCase().includes(query.toLowerCase()) ||
+        user.disvision.toLowerCase().includes(query.toLowerCase()) ||
+        user.district.toLowerCase().includes(query.toLowerCase())
       );
     });
   }, [users, query]);
