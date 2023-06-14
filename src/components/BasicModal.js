@@ -8,7 +8,9 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useState, useEffect } from "react";
-import Menu from "@mui/material/Menu";
+import { Field, Form, Formik } from "formik";
+import { object, string } from "yup";
+import UserListComponent from "./UserListComponent";
 
 const style = {
   position: "absolute",
@@ -31,7 +33,7 @@ export default function BasicModal() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const [type, setType] = useState("");
+  const [type, setType] = useState(100);
   const handleTypeChange = (event) => {
     setType(event.target.value);
   };
@@ -54,10 +56,10 @@ export default function BasicModal() {
   // District Field Handling Logic
   const [districts, setDistricts] = useState([]);
   const [district, setDistrict] = useState(0);
-  const getDistricts = async (distID) => {
-    const response = await fetch(`${GET_DISTRICTS_API_URL}` + distID);
+  const getDistricts = async (divisionID) => {
+    const response = await fetch(`${GET_DISTRICTS_API_URL}` + divisionID);
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
 
     setDistricts(data.readDistrictData);
   };
@@ -66,6 +68,7 @@ export default function BasicModal() {
     setDistrict(event.target.value);
   };
 
+  // useEffects
   useEffect(() => {
     getDivisions();
   }, []);
@@ -73,6 +76,13 @@ export default function BasicModal() {
   useEffect(() => {
     getDistricts(division);
   }, [handleDivisionChange]);
+
+  //
+
+  const initalValues = {
+    firstName: "",
+    lastName: "",
+  };
 
   return (
     <div>
@@ -87,115 +97,195 @@ export default function BasicModal() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Create a user
-          </Typography>
-          {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography> */}
-          <br />
-
-          <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
-            <TextField
-              type="text"
-              variant="outlined"
-              color="secondary"
-              label="First Name"
-              //   onChange={(e) => setFirstName(e.target.value)}
-              //   value={firstName}
-              fullWidth
-              required
-            />
-            <TextField
-              type="text"
-              variant="outlined"
-              color="secondary"
-              label="Last Name"
-              //   onChange={(e) => setLastName(e.target.value)}
-              //   value={lastName}
-              fullWidth
-              required
-            />
-          </Stack>
-          <Box sx={{ minWidth: 120 }}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Type</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={type}
-                label="Type"
-                onChange={handleTypeChange}
-              >
-                <MenuItem value={100}>Admin</MenuItem>
-                <MenuItem value={200}>Employee</MenuItem>
-              </Select>
-            </FormControl>
+          <Box textAlign="center">
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Create User
+            </Typography>
           </Box>
-          {/* {console.log(type == "200")} */}
-          {type == "200" ? (
-            <>
-              <br />
-              <Box sx={{ minWidth: 120 }}>
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">
-                    Division
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={division ?? division.divID}
-                    label="Division"
-                    onChange={handleDivisionChange}
-                  >
-                    {divisions.map((division) => {
-                      //   console.log(division.divisionName);
-                      return (
-                        <MenuItem key={division.divID} value={division.divID}>
-                          {division.divisionName}
-                          {/* --
-                          {division.divID} */}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              </Box>
-            </>
-          ) : null}
+          <br />
+          <Formik
+            initialValues={initalValues}
+            onSubmit={(values, formikHelpers) => {
+              // console.log(values);
+              // console.log(type);
+              // console.log(district);
 
-          {division > 0 ? (
-            <>
-              <br />
-              <Box sx={{ minWidth: 120 }}>
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">
-                    District
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={district ?? district.districtID}
-                    label="District"
-                    onChange={handleDistrictChange}
-                  >
-                    {districts.map((district) => {
-                      console.log(district);
+              // if type is 100 its Admin
+              // if type is 200 its Employee
 
-                      return (
-                        <MenuItem
-                          key={district.districtID}
-                          value={district.districtName}
+              const post = {
+                firstName: values.firstName,
+                lastName: values.lastName,
+                employeeType: type == 100 ? "Admin" : "Employee",
+                districeID: type == 100 ? 0 : district,
+              };
+
+              console.log(post);
+
+              fetch(
+                "http://59.152.62.177:8085/api/Employee/SaveEmployeeInformation/",
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(post),
+                }
+              ).then(() => {
+                console.log("new user added");
+              });
+
+              formikHelpers.resetForm();
+
+              handleClose();
+              // useNavigate to UserListComponent
+            }}
+            validationSchema={object({
+              firstName: string().required("Please enter first name"),
+              lastName: string().required("Please enter last name"),
+            })}
+          >
+            {({ errors, isValid, touched, dirty }) => (
+              <Form>
+                <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
+                  <Field
+                    name="firstName"
+                    type="firstName"
+                    as={TextField}
+                    variant="outlined"
+                    color="primary"
+                    label="First Name"
+                    fullWidth
+                    error={
+                      Boolean(errors.firstName) && Boolean(touched.firstName)
+                    }
+                    helperText={Boolean(touched.firstName) && errors.firstName}
+                  ></Field>
+                  <Field
+                    name="lastName"
+                    type="lastName"
+                    as={TextField}
+                    variant="outlined"
+                    color="primary"
+                    label="Last Name"
+                    fullWidth
+                    error={
+                      Boolean(errors.lastName) && Boolean(touched.lastName)
+                    }
+                    helperText={Boolean(touched.lastName) && errors.lastName}
+                  ></Field>
+                  {/* <TextField
+                    type="text"
+                    variant="outlined"
+                    color="secondary"
+                    label="First Name"
+                    //   onChange={(e) => setFirstName(e.target.value)}
+                    //   value={firstName}
+                    fullWidth
+                    required
+                  />
+                  <TextField
+                    type="text"
+                    variant="outlined"
+                    color="secondary"
+                    label="Last Name"
+                    //   onChange={(e) => setLastName(e.target.value)}
+                    //   value={lastName}
+                    fullWidth
+                    required
+                  /> */}
+                </Stack>
+                <Box sx={{ minWidth: 120 }}>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Type</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={type}
+                      label="Type"
+                      onChange={handleTypeChange}
+                    >
+                      <MenuItem value={100}>Admin</MenuItem>
+                      <MenuItem value={200}>Employee</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+                {/* {console.log(type == "200")} */}
+                {type == "200" ? (
+                  <>
+                    <br />
+                    <Box sx={{ minWidth: 120 }}>
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                          Division
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={division ?? division.divID}
+                          label="Division"
+                          onChange={handleDivisionChange}
                         >
-                          {district.districtName}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              </Box>
-            </>
-          ) : null}
+                          {divisions.map((division) => {
+                            //   console.log(division.divisionName);
+                            return (
+                              <MenuItem
+                                key={division.divID}
+                                value={division.divID}
+                              >
+                                {division.divisionName}
+                                {/* --
+                          {division.divID} */}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                      </FormControl>
+                    </Box>
+                  </>
+                ) : null}
+
+                {type == "200" && division > 0 ? (
+                  <>
+                    <br />
+                    <Box sx={{ minWidth: 120 }}>
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                          District
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={district ?? district.districtID}
+                          label="District"
+                          onChange={handleDistrictChange}
+                        >
+                          {districts.map((district) => {
+                            // console.log(district);
+
+                            return (
+                              <MenuItem
+                                key={district.districtID}
+                                value={district.districtID}
+                              >
+                                {district.districtName}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                      </FormControl>
+                    </Box>
+                  </>
+                ) : null}
+
+                <br />
+
+                <Box textAlign="center">
+                  <Button type="submit" variant="contained">
+                    Create
+                  </Button>
+                </Box>
+              </Form>
+            )}
+          </Formik>
         </Box>
       </Modal>
     </div>

@@ -9,7 +9,7 @@ export default function UserListComponent({ type }) {
   const [users, setUsers] = useState([]);
   const [query, setQuery] = useState("");
 
-  const getAdminUsers = async () => {
+  const getUsers = async () => {
     const response = await fetch(`${GET_USERS_API_URL}`);
     const data = await response.json();
 
@@ -25,7 +25,7 @@ export default function UserListComponent({ type }) {
   };
 
   useEffect(() => {
-    getAdminUsers();
+    getUsers();
   }, []);
 
   const filteredItems = useMemo(() => {

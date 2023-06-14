@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import Button from "@mui/material/Button";
 import UserListComponent from "./UserListComponent";
 import BasicModal from "./BasicModal";
 
